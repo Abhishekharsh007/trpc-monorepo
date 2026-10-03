@@ -1,11 +1,21 @@
-import { router } from "./trpc";
+import { publicProcedure, router } from "./trpc";
+import { z } from "zod";
 
 import { healthRouter } from "./routes/health/route";
-import { authRouter } from "./routes/auth/route";
+// import { authRouter } from "./routes/auth/route";
 
 export const serverRouter = router({
   health: healthRouter,
-  auth: authRouter,
+  // auth: authRouter,
+  abhishek: publicProcedure
+    .meta({ openapi: { method: "GET", path: "/abhishek" } })
+    .input(z.object({ name: z.string(), email: z.email(), age:z.number() }))
+    .output(z.object({ message: z.string() }))
+    .query(async ({ input }) => {
+      return {
+        message: `Hello ${input.email}`
+      } 
+  }),
 });
 
 export { createContext } from "./context";
